@@ -1,6 +1,6 @@
 # Numerical methods
 
-My solution to a course about various Numerical Methods in different fields I took in 2020:
+My solutions to a course about various Numerical Methods in different fields I took in 2020:
 
 1. Optimization methods
 1. Numerical differentation
