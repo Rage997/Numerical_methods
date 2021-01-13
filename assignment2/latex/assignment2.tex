@@ -1,0 +1,101 @@
+\documentclass[12pt]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+\title{Numerical analysis: Assignment 2}
+\author{Niccolo Zuppichini}
+\begin{document}
+
+\maketitle
+\section*{Exercise 1}
+
+The code can be found in the folder \textit{code}. It has been written in Matlab. There's the main file which solves the given linear problem with size 9999 as specified on the assignment. \\
+
+Moreover, I've checked my solution by assembling the matrix $A$, vector $b$ and solving it with an "in memory" Gauss Seidel implementation. Then I have adapted this code to be on place. Even though it is not required in the assignment, I have uploaded these codes as well. Running $main.m$ will display, in the console: \\
+\begin{center}
+	\textit{It took 5157 iterations to get the solution of size 9999 at machine error.}
+\end{center}
+
+\section*{Exercise 2}
+
+To show what asked, I think it's better to split the matrix into two matrices easier to analyse. Note that the sum of \hyperref[sec:proof_sym]{symmetric} \hyperref[sec:proof_pd]{positive definite} matrices is symmetric positive definite too. \\
+For n = 5 we have: \\
+\\
+$
+\begin{bmatrix}
+	6 & -2 & 0 & 0  & 1 \\
+	-2 & 6 & -2 & 1 & 0 \\
+	0 & -2 & 6 & -2 & 0\\
+	0 & 1 & -2 & 6 & -2  \\
+	 1 & 0 & 0 & -2 & 6 
+\end{bmatrix}
+ = 
+ \begin{bmatrix}
+	6 & -2 & 0 & 0  & 0 \\
+	-2 & 6 & -2 & 0 & 0 \\
+	0 & -2 & 6 & -2 & 0\\
+	0 & 0 & -2 & 6 & -2  \\
+	 0 & 0 & 0 & -2 & 6 
+\end{bmatrix}
++ 
+\begin{bmatrix}
+	0 & 0 & 0 & 0  & 1 \\
+	0 & 0 & 0 & 1 & 0 \\
+	0 & 0 & 0 & 0 & 0\\
+	0 & 1 & 0 & 0 & 0  \\
+	 1 & 0 & 0 & 0 & 0 
+\end{bmatrix}
+= A + B 
+$
+\\
+\\
+The first matrix is a tridiagonal matrix and the second one an antidiagonal matrix with a zero-entry in the middle. This can be generalised for any odd number $n$. \\ 
+
+By the \hyperref[sec:proof1]{spectral theorem}, a positive definite matrix has all the eigenvalues positive, moreover, if it is also symmetric then all the eigenvalues are real number and positive. \\
+
+
+The first matrix $A$ is diagonally dominant and is clearly symmetric. The eigenvalues of the first matrix $A$ are given by the simple closed form (implemented as well in \textit{code/compute\_eig.m}): \\
+
+$$\lambda_k = a - 2 \sqrt{bc} \; cos(\frac{k \pi}{n+1})$$
+
+Where $a=6, b=c=-2$ then: \\
+
+$$\lambda_k = 6 - 2 \sqrt{4} cos(\frac{k \pi}{n+1}) = 6 - 4 cos(\frac{k \pi}{n+1}) = $$
+
+The cosine function returns values in the interval $[-1, 1]$ and therefore: \\
+
+$$\lambda_k = 6 - 4 cos(\frac{k \pi}{n+1}) \geq 6 - 4 \geq 0 $$
+
+Hence, all eigenvalues $\lambda_k$ are positive and therefore the first matrix (namely $A$) is positive definite. \\
+
+The second matrix $B$ is symmetric too and its eigenvalues are, for any odd number of $n$ (0, 1, ..., 1)  hence are all real numbers and positive. It is, therefore, a symmetric positive definite matrix. 
+\\
+
+Both matrices $A$ and $B$ are symmetric positive definite, therefore their sum $A+B$ is symmetric positive definite as well. \\
+
+\textbf{UPDATE:} I made an error on the eigenvalues of matrix $B$: the one I mentioned are the eigenvalues for identity matrix. But this is a flipped identity and its eigenvalues are (0, -1, -1,..., 1, 1) and therefore $B$ is not positive definite. \\
+
+\subsection*{Proof: positive definite matrix has positive eigenvalues}
+\label{sec:proof1}
+
+By the spectral theorem we can decompose a matrix $A$ into $A = Q \Sigma Q^T$ where $Q$ is a matrix containing the eigenvectors of $A$ colomnwise and $\Sigma$ is a diagonal matrix containing the eigenvalues of $A$. Then, by definition, a positive definite matrix $A$ satisfies $x^T A x > 0 $. By the eigenvalue decomposition, $x^T A x = x^T Q \Sigma Q^T x > 0 \implies \sum_{i=1}^N \lambda_i (Q^T x)^2 > 0 $. Hence if all the eigenvalues $\lambda_i$ are positive then $A$ is positive definite. \\
+
+
+\subsection*{Proof: the sum of positive definite matrix is positive definite}
+\label{sec:proof_pd}
+Given two positive definite matrices $A$ and $B$ then $A+B$ is positive definite too. \\ \\
+\textbf{Proof:}
+To prove this, it suffices to show that $x^T (A+B) x > 0 \forall x \in R^n $. \\
+
+$$x^T (A+B) x = x^T A x + x^T B x > 0 $$ 
+
+
+\subsection*{Proof: the sum of symmetric matrix is symmetric}
+\label{sec:proof_sym}
+A matrix is symmetric if $A=A^T$. Given two symmetric matrix $A$ and $B$ then $A+B$ is symmetric as well. \\
+
+\textbf{Proof:} We want to show $(A+B)=(A+B)^T$. By the properties of matrix $(A+B)^T = A^T + B^T$ Since $A$ and $B$ are symmetric  $ A^T + B^T = A + B = (A+B) $. Therefore $(A+B)=(A+B)^T$.
+
+
+\end{document}

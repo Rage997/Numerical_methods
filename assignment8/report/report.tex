@@ -1,0 +1,162 @@
+\documentclass[12pt]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\title{Numerical analysis: Assignment 8}
+\author{Niccolo Zuppichini}
+\begin{document}
+
+\maketitle
+\section*{Exercise 1}
+
+% Ref: https://mathworld.wolfram.com/Newton-CotesFormulas.html
+
+The integral $\int_a^b f(x)$ can be approximated using a Lagrange polynomial of degree 2 as follows: \\
+
+\begin{equation}
+	\int_a^b f(x) \approx \int_{a=x_0}^{b=x3} P_2
+	\label{eq:initial}
+\end{equation}
+
+The polynomial $P_2$ is given by:
+
+% Not sure if the sum is up to 2
+\begin{equation}
+	P(x) = \sum_{j=0}^3 f(x_j) l_j(x)
+	\label{eq:lagrange_poly}
+	\caption{Lagrange polynomial of degree 2}
+\end{equation}
+
+with $l_j(x)$ defined as: 
+
+\begin{equation}
+	l_j(x) \prod_{j=0, m \neq j}^n \frac{x - x_m}{x_j - x_m}
+	\label{eq:lagrange}
+\end{equation}
+
+Then by inserting Eq. \ref{eq:lagrange_poly} and Eq. \ref{eq:lagrange} into Eq. \ref{eq:initial}: 
+
+\begin{equation}
+	\int_a^b f(x) \approx \int_{a=x_0}^{b=x3} P = \int_{a=x_0}^{b=x_3} \sum_{j=0}^3 f(x_j) \prod_{j=0, m \neq j}^n \frac{x - x_m}{x_j - x_m}
+	\label{eq:all_in}
+\end{equation}
+
+By rearranging Eq. \ref{eq:all_in} we get :
+%(I haven't reported all the steps into latex but you can find them in the pdf \textit{exercise1\_calculus.pdf} \\
+
+\begin{equation}
+	\int_{a=x_1}^{b=x3} P = 
+	\int_{x_0}^{x_3} f_1 \frac{x-x_2}{x_1 - x_2} \frac{x-x_3}{x_1 - x_3} +
+	  f_2 \frac{x-x_1}{x_2 - x_1} \frac{x-x_3}{x_2 - x_3} +
+	f_3 \frac{x-x_1}{x_3 - x_1} \frac{x-x_2}{x_3 - x_2}
+	\label{eq:explicit_lagrange}
+\end{equation}
+
+By using the fact that the points are equidistant, Eq. \ref{eq:explicit_lagrange} becomes: 
+
+\begin{equation}
+	= \int_{x_1 - h}^{x_1+2h} 
+	f_1 \frac{x^2 - x_2 x - x_3 x + x_2 x_3}{2h^2} +
+	  f_2 \frac{x^2 - x_3 x - x_1 x + x_1 x_3}{-h^2} +
+	f_3 \frac{x^2 - x_2 x - x_1 x + x_1 x_2}{2h^2} =
+\end{equation}
+
+\begin{equation}
+	= \frac{1}{h^2} \int_{x_1 - h}^{x_1+2h} 
+	f_1 \frac{x^2 - x_2 x - x_3 x + x_2 x_3}{2} -
+	   f_2 (x^2 - x_3 x - x_1 x + x_1 x_3) +
+	f_3 \frac{x^2 - x_2 x - x_1 x + x_1 x_2}{2} =
+\end{equation}
+
+By splitting the integrals: \\
+
+\begin{equation}
+	= \frac{1}{h^2} \bigg( 
+	\frac{f_1}{2} \int_{x_1 - h}^{x_1+2h} x^2 - x_2 x - x_3 x + x_2 x_3 -
+	   f_2 \int_{x_1 - h}^{x_1+2h} (x^2 - x_3 x - x_1 x + x_1 x_3) +
+	\frac{f_3}{2} \int_{x_1 - h}^{x_1+2h} x^2 - x_2 x - x_1 x + x_1 x_2 \bigg) =
+	\label{eq:last_step}
+\end{equation}
+
+Solving the three integrals gives the following relation :
+
+\begin{equation}
+	\int_a^b f(x) \approx \frac{4}{3} h (2 f_1 - f_2 + 2 f_3) +  \mathcal{O}(h^5)
+\end{equation} 
+
+The code has been implemented as required (i.e. dividing the interval (a,b) into 100 subpieces) in \textit{exercise1.py} and outputs: \\
+
+\begin{center}
+\begin{lstlisting}
+Numerical solution:  0.9460279856300005
+
+Analytical solution:  0.946083070367183
+
+Absolute error:  5.50847371825203e-5	
+\end{lstlisting}	
+\end{center}
+
+The console output of my code also verifies the order $\mathcal{O}(n^5)$ of accuracy. 
+
+
+\section*{Exercise 2}
+
+The implementation can be found in \textit{code/exercise2.py}. The output (for $j = 5)$ is : \\
+
+\begin{center}
+\begin{lstlisting}
+Iterations:  5
+
+Numerical solution:  4.10879206104986
+
+Analytical solution:  4.670774270471606
+
+Absolute error:  0.5619822094217461
+\end{lstlisting}
+	
+\end{center}
+
+
+\section*{Bonus exercise}
+
+By the theorem of uniqueness of the interpolating polynomial: \\
+
+\begin{equation}
+	\begin{split}
+			c(x) = q_1(x) + h_1(x) \\
+			c(x) = q_2(x) + h_2(x) 
+	\end{split}
+\end{equation}
+
+with: \\
+\begin{equation}
+	\begin{split}
+		h_1(x) = \lambda (x-x_0) (x-x_1) (x-x_2) \\
+		\lambda = \frac{f_3 - q_1(x_3)}{6h^3} \\
+		h_2(x) = \mu (x-x_1) (x-x_2) (x-x_3) \\
+		\mu = \frac{f_0 - q_2(x_0)}{-6h^3}		
+	\end{split}
+	\label{eq:relations}
+\end{equation}
+
+We need to show that: 
+\begin{equation}
+	\int_a^{a+3h} c(x) = \frac{1}{2} \int_a^{a+3h} q_1(x) + \frac{1}{2} \int_a^{a+3h} q_2(x)
+\end{equation}
+
+By inserting Eq. \ref{eq:relations} it follows: 
+
+\begin{equation}
+	\int_a^{a+3h} 2 c(x) = \int_a^{a+3h} q_1(x) + \int_a^{a+3h} q_2(x)
+	\implies \int_a^{a+3h} h_1(x) + h_2(x) dx = 0
+	\label{eq:new_relation}
+\end{equation}
+
+Therefore it suffices to show Eq. \ref{eq:new_relation} is equal to zero. However, I got lost into calculus. 
+
+\end{document}

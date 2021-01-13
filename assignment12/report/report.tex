@@ -1,0 +1,91 @@
+\documentclass[12pt]{article}
+\usepackage[margin=0.7in]{geometry}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+
+\title{Numerical Algorithms: Assignment 12}
+\author{Niccolo Zuppichini}
+\begin{document}
+
+\maketitle
+
+\section*{Exercise 1}
+
+Show that the product of two column-stochastic matrices is also column-stochastic. \\
+
+\textbf{Proof:}
+
+Let's consider two column stochastic matrix $A$ and $B$ of size $n \; \textrm{x} \; n$. By definition: \\
+
+\begin{equation}
+	\sum_{i=1}^n A_{i, j} = \sum_{i=1}^n B_{i, j} = 1 \quad \forall j \in [1, N]
+	\label{eq:initial}
+\end{equation}
+
+The product $AB$, per column is:
+ 
+
+\begin{equation}
+	[AB]_{i, j} = \sum_{k=1}^n A_{i, k} B_{k, j}
+	\label{eq:ab_product}
+\end{equation}
+
+Columns wise addition gives: 
+
+\begin{equation}
+\sum_{i=1}^n [AB]_{i, j} = \sum_{i=1}^n \sum_{k=1}^n A_{i, k} B_{k, i} 	
+\label{eq:1}
+\end{equation}
+
+By re-arranging summation indexes of Eq. \ref{eq:1} (this is legit because the two sum terms are independent of each other).
+
+\begin{equation}
+\sum_{i=1}^n [AB]_{i, j} = \sum_{k=1}^n \sum_{i=1}^n A_{i, k} B_{k, i} 	
+\label{eq:2}
+\end{equation}
+
+By definition of column-stochastic matrix (Eq. \ref{eq:initial}) it follows: 
+
+\begin{equation}
+\sum_{i=1}^n [AB]_{i, j} = \sum_{k=1}^n 1 B_{k, i} 	
+\label{eq:3}
+\end{equation}
+
+and by applying again the definition of column-stochastic matrix (Eq. \ref{eq:initial}) it follows: 
+
+\begin{equation}
+\sum_{i=1}^n [AB]_{i, j} = \sum_{k=1}^n B_{k, i} 	= 1
+\label{eq:3}
+\end{equation}
+
+Concluding the proof.
+
+\section*{Exercise 2}
+
+The code has been implemented in \textit{exercise2.py} using Python 2.7. The output of my code is reported in Listing \ref{lst:result}.
+
+\begin{lstlisting}[caption=Code output, label=lst:result]
+The results do not change after 6 iterations
+The norm L_inf(x, prev_x) took 35 iterations to converge
+The result ranking of the web pages is: 
+ [ 1  4  2  3  5  6  7  8  9 12 10 11 14 13 15]
+\end{lstlisting}
+\\
+\\
+If we add a self loop to web-page 14 by doing $A[13, 13] = 1$ (line 25 in the code) we obtain: 
+
+\begin{lstlisting}[caption=Code output]
+The results do not change after 4 iterations
+The norm L_inf(x, prev_x) took 36 iterations to converge
+The result ranking of the web pages is: 
+ [ 1  4  2  3  5  6  7  8  9 12 10 11 13 15 14]
+\end{lstlisting}
+
+the web page 14 is now ranked last.
+
+\end{document}
